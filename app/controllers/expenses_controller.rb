@@ -4,7 +4,15 @@ class ExpensesController < ApplicationController
   # GET /expenses
   # GET /expenses.json
   def index
-    @expenses = Expense.all
+
+    
+
+    @expenses = Expense.all.where({:expense_date => Date.today})
+    @daily_total = 0
+
+    @expenses.each do |expense|
+      @daily_total += expense.expense_cost
+    end
   end
 
   # GET /expenses/1
@@ -25,6 +33,14 @@ class ExpensesController < ApplicationController
   # POST /expenses.json
   def create
     @expense = Expense.new(expense_params)
+
+    @expense.update({ expense_type: @expense.expense_type,
+                      expense_content: @expense.expense_content,
+                      expense_cost: @expense.expense_cost,
+                      expense_date: Date.today,
+                      purchaser_name: @expense.purchaser_name})
+
+
 
     respond_to do |format|
       if @expense.save
@@ -67,8 +83,9 @@ class ExpensesController < ApplicationController
       @expense = Expense.find(params[:id])
     end
 
+
     # Never trust parameters from the scary internet, only allow the white list through.
     def expense_params
-      params.require(:expense).permit(:expense_type, :expense_content, :expense_cost, :purchaser_name)
+      params.require(:expense).permit(:expense_type, :expense_date, :expense_content, :expense_cost, :purchaser_name)
     end
 end
