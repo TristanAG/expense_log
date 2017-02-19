@@ -5,14 +5,10 @@ class ExpensesController < ApplicationController
   # GET /expenses.json
   def index
 
-    
+    @expenses = Expense.all
+    get_current_daily_expenses
 
-    @expenses = Expense.all.where({:expense_date => Date.today})
-    @daily_total = 0
 
-    @expenses.each do |expense|
-      @daily_total += expense.expense_cost
-    end
   end
 
   # GET /expenses/1
@@ -34,11 +30,20 @@ class ExpensesController < ApplicationController
   def create
     @expense = Expense.new(expense_params)
 
-    @expense.update({ expense_type: @expense.expense_type,
-                      expense_content: @expense.expense_content,
-                      expense_cost: @expense.expense_cost,
-                      expense_date: Date.today,
-                      purchaser_name: @expense.purchaser_name})
+    @expense.update({
+      expense_type: @expense.expense_type,
+      expense_content: @expense.expense_content,
+      expense_cost: @expense.expense_cost,
+      expense_date: Date.today,
+      purchaser_name: @expense.purchaser_name
+    })
+
+    # @expense.update({ expense_type: @expense.expense_type,
+    #                   expense_content: @expense.expense_content,
+    #                   expense_cost: @expense.expense_cost,
+    #                   expense_date: Date.today,
+    #                   purchaser_name: @expense.purchaser_name,
+    #                   start_time: @expense.start_time})
 
 
 
@@ -83,9 +88,20 @@ class ExpensesController < ApplicationController
       @expense = Expense.find(params[:id])
     end
 
+    def get_current_daily_expenses
+      @current_daily_expenses = Expense.all.where({:expense_date => Date.today})
+      @daily_total = 0
+      @current_daily_expenses.each do |expense|
+        @daily_total += expense.expense_cost
+      end
+    end
+
+    def get_weekly_expenses
+      @weekly_expenses = Expense.all.where
+    end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def expense_params
-      params.require(:expense).permit(:expense_type, :expense_date, :expense_content, :expense_cost, :purchaser_name)
+      params.require(:expense).permit(:start_time, :expense_type, :expense_date, :expense_content, :expense_cost, :purchaser_name)
     end
 end
