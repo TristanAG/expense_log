@@ -83,25 +83,25 @@ class ExpensesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_expense
-      @expense = Expense.find(params[:id])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_expense
+    @expense = Expense.find(params[:id])
+  end
 
-    def get_current_daily_expenses
-      @current_daily_expenses = Expense.all.where({:expense_date => Date.today})
-      @daily_total = 0
-      @current_daily_expenses.each do |expense|
-        @daily_total += expense.expense_cost
-      end
+  def get_current_daily_expenses
+    @current_daily_expenses = Expense.all.where({:expense_date => Date.today})
+    @daily_total = 0
+    @current_daily_expenses.each do |expense|
+      @daily_total += expense.expense_cost
     end
+  end
 
-    def get_weekly_expenses
-      @weekly_expenses = Expense.all.where
-    end
+  def get_weekly_expenses
+    #@weekly_expenses = Expense.all.where
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def expense_params
-      params.require(:expense).permit(:start_time, :expense_type, :expense_date, :expense_content, :expense_cost, :purchaser_name)
-    end
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def expense_params
+    params.require(:expense).permit(:start_time, :expense_type, :expense_date, :expense_content, :expense_cost, :purchaser_name)
+  end
 end
